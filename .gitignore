@@ -44,3 +44,4 @@ logs/
 eventimages/
 src/main/java/Discord/test.java
 /src/main/resources/apikey.env
+/apikey.env
