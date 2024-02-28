@@ -2,8 +2,6 @@ package Discord;
 
 import com.hawolt.logger.Logger;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.MessageHistory;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.json.JSONObject;
 
@@ -14,12 +12,11 @@ import java.io.*;
 import java.time.LocalDateTime;
 
 public class CheckEvent extends Thread {
-	EventType currentEvent;
+	public EventType currentEvent;
 	JDA jda;
 	JSONObject binds, pics, lang;
 	Main main;
 	String currentMessage = "";
-	boolean running = true;
 	boolean debug, init;
 	public CheckEvent(JDA jda, JSONObject binds, JSONObject pics, Main main, JSONObject lang, boolean debug) {
 		this.jda = jda;
@@ -34,7 +31,7 @@ public class CheckEvent extends Thread {
 		super.run();
 		Logger.error("run Checkevent");
 		while (true) {
-			if (running) checkForEvent();
+			if (Main.running) checkForEvent();
 			try {
 				Thread.sleep(60000);
 			} catch (InterruptedException ignored){
@@ -43,6 +40,34 @@ public class CheckEvent extends Thread {
 	}
 	
 	void checkForEvent() {
+		String name = comparePics();
+		if (name.isEmpty()) return;
+		if (pics.has(name)) {
+			if (name.contains("Disconnect")) {
+				jda.getTextChannelById("1178712493934252157").sendMessage("<@277064996264083456> " + pics.getString(name)).queue();
+				return;
+			}
+			EventType temp = currentEvent;
+			getEventType(name);
+			String newMessage = pics.getString(name);
+			if (debug) currentEvent = EventType.APO;
+			if (currentEvent == EventType.NONE && !name.equals("NoEvent.png")) {
+				jda.getTextChannelById("1178712493934252157").sendMessage(newMessage).queue();
+			} else {
+				if (temp != currentEvent) {
+					if (!init) {
+						if (currentEvent.equals(EventType.NONE)) Main.sendToAllLangDependend("restartnone");
+						else Main.sendToAllLangDependend("restart", currentEvent.toString());
+						init = true;
+					}
+				}
+				currentMessage = newMessage;
+			}
+			return;
+		}
+	}
+
+	public String comparePics() {
 		try {
 			main.readPics();
 			Robot robot = new Robot();
@@ -64,73 +89,7 @@ public class CheckEvent extends Thread {
 							}
 						}
 					}
-					Logger.info("gleiche bilder");
-					Logger.info(f.getName());
-					if (pics.has(f.getName())) {
-						if (f.getName().contains("Disconnect")) {
-							jda.getTextChannelById("1178712493934252157").sendMessage("<@277064996264083456> " + pics.getString(f.getName())).queue();
-							return;
-						}
-						EventType temp = currentEvent;
-						switch (f.getName()) {
-							case "ApoEvent.png": {
-								currentEvent = EventType.APO;
-								break;
-							}
-							case "TevaEvent.png": {
-								currentEvent = EventType.TEVA;
-								break;
-							}
-							case "CypianEvent.png": {
-								currentEvent = EventType.CYPIAN;
-								break;
-							}
-							case "ElgaEvent.png": {
-								currentEvent = EventType.ELGA;
-								break;
-							}
-							default: {
-								currentEvent = EventType.NONE;
-								break;
-							}
-						}
-						String newMessage = pics.getString(f.getName());
-						if (debug) currentEvent = EventType.APO;
-						if (currentEvent == EventType.NONE && !f.getName().equals("NoEvent.png")) {
-							jda.getTextChannelById("1178712493934252157").sendMessage(newMessage).queue();
-						} else {
-							if (temp != currentEvent) {
-								for (String j : binds.keySet()) {
-									if (binds.getJSONObject(j).has("bind")) {
-										String s = binds.getJSONObject(j).getString("bind");
-										if (debug) s = "1178712493934252157";
-										TextChannel channel = jda.getTextChannelById(s);
-										try {
-											String message = "";
-											String language = "englisch";
-											if (binds.getJSONObject(j).has("lang")) language = binds.getJSONObject(j).getString("lang");
-											message = lang.getJSONObject(language).getString(currentEvent.toString());
-											
-											if (!init) {
-												String latestMessage = channel.getLatestMessageId();
-												MessageHistory history = channel.getHistoryAround(latestMessage, 1).complete();
-												if (message.equals(history.getMessageById(latestMessage).getContentRaw())) return;
-												if (currentEvent.equals(EventType.NONE)) message = lang.getJSONObject(binds.getJSONObject(j).getString("lang")).getString("restartnone").replace("{}", currentEvent.toString());
-												else message = lang.getJSONObject(binds.getJSONObject(j).getString("lang")).getString("restart").replace("{}", currentEvent.toString());
-												init = true;
-											}
-											channel.sendMessage(message).queue();
-										} catch (NullPointerException e) {
-											Logger.info("unbound guild" + e);
-										}
-									}
-								}
-							}
-							currentMessage = newMessage;
-						}
-						return;
-					}
-					break;
+					return f.getName();
 				} else{
 					continue;
 				}
@@ -139,8 +98,34 @@ public class CheckEvent extends Thread {
 			ImageIO.write(biA, "png", unknownF);
 			Logger.error("unkown type");
 			jda.getTextChannelById("1178712493934252157").sendMessage("<@277064996264083456> " + "IDK PLS HELP").addFiles(FileUpload.fromData(unknownF)).queue();
-		} catch (Exception e) {
-			Logger.error(e);
+		} catch (IOException | AWTException e) {
+		
+		}
+		return "";
+	}
+
+	private void getEventType(String name) {
+		switch (name) {
+			case "ApoEvent.png": {
+				currentEvent = EventType.APO;
+				break;
+			}
+			case "TevaEvent.png": {
+				currentEvent = EventType.TEVA;
+				break;
+			}
+			case "CypianEvent.png": {
+				currentEvent = EventType.CYPIAN;
+				break;
+			}
+			case "ElgaEvent.png": {
+				currentEvent = EventType.ELGA;
+				break;
+			}
+			default: {
+				currentEvent = EventType.NONE;
+				break;
+			}
 		}
 	}
 }
