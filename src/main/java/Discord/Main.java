@@ -162,6 +162,8 @@ public class Main extends ListenerAdapter {
 				eventCheck.running = true;
 			} else if (s.equals("?mute")) {
 				muted = !muted;
+			} else if (s.contains("?adminmessage")) {
+				sendToAll(s.substring(s.indexOf(" ") + 1));
 			}
 		}
 	}
