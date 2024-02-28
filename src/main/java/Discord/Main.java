@@ -58,6 +58,9 @@ public class Main extends ListenerAdapter {
 		String gid = event.getGuild().getId();
 		String cid = event.getChannel().getId();
 		TextChannel channel = event.getChannel().asTextChannel();
+		String guildLang = "englisch";
+		if (bindsObject.has(gid) && bindsObject.getJSONObject(gid).has("lang")) guildLang = bindsObject.getJSONObject(gid).getString("lang");
+		JSONObject guildLangObject = lang.getJSONObject(guildLang);
 		if (s.equals("?bind")) {
 			Logger.info("binding");
 			if (!bindsObject.has(gid)) bindsObject.put(gid, new JSONObject());
