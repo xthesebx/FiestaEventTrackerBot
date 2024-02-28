@@ -1,0 +1,20 @@
+{
+  "deutsch" : {
+    "APO" : "Ein Apo Event hat gestartet",
+    "CYPIAN" : "Ein Cypian Event hat gestartet",
+    "TEVA" : "Ein Teva Event hat gestartet",
+    "NONE" : "Das Event wurde beendet"
+  },
+  "englisch" : {
+    "APO" : "An Apo Event has started",
+    "CYPIAN" : "A Cypian Event has started",
+    "TEVA" : "A Teva Event has started",
+    "NONE" : "The Event ended"
+  },
+  "debug" : {
+    "APO" : "Apo Event",
+    "CYPIAN" : "Cypian Event",
+    "TEVA" : "Teva Event",
+    "NONE" : "No Event"
+  }
+}
