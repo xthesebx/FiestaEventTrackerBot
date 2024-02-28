@@ -1,0 +1,50 @@
+{
+  "deutsch" : {
+    "APO" : "Ein Apo Event hat gestartet",
+    "CYPIAN" : "Ein Cypian Event hat gestartet",
+    "TEVA" : "Ein Teva Event hat gestartet",
+    "NONE" : "Das Event wurde beendet",
+    "binding" : "Der Bot ist nun auf diesem Channel gebunden",
+    "eventrn" : "Aktuell läuft ein {} Event",
+    "noeventrn" : "Aktuell läuft kein Event",
+    "unbinding" : "Der Bot ist nun nicht mehr gebunden",
+    "unknownLang" : "Sprache unbekannt, bitte nutze deutsch oder englisch",
+    "langchange" : "Die Sprache wurde auf Deutsch geändert",
+    "commands" : "Befehle:\n?bind : Binde den Bot auf diesen channel\n?event : gibt aktuelles Event aus\n?unbind : entbindet Bot von dem Channel\n?help : gibt diese Meldung aus\n?language {Sprache} : setzt die Sprache auf deutsch oder englisch (wahlweise)\nBei Fragen oder verbesserungswünschen, fügt xxthesebxx als freund auf discord hinzu und fragt ihn",
+    "restart" : "Der Bot wurde neugestartet, aktuell läuft ein {} Event",
+    "restartnone" : "Der Bot wurde neugestartet, aktuell läuft kein Event",
+    "credits" : "Der Bot wird komplett von xXTheSebXx gehosted und geschrieben. Bei Fragen und Anregungen einfach xxthesebxx auf Discord adden oder bei https://github.com/xthesebx/FiestaEventTrackerBot ein Issue eröffnen."
+  },
+  "englisch" : {
+    "APO" : "An Apo Event has started",
+    "CYPIAN" : "A Cypian Event has started",
+    "TEVA" : "A Teva Event has started",
+    "NONE" : "The Event ended",
+    "binding" : "The Bot is now bound to this channel",
+    "eventrn" : "Currently there is an {} Event ongoing",
+    "noeventrn" : "Currently there is no Event ongoing",
+    "unbinding" : "Bot is now unbound",
+    "unknownLang" : "Language unknown, please use deutsch or englisch",
+    "langchange" : "switched language to englisch",
+    "commands" : "Commands:\n?bind bind Bot to this channel\n?event print current event\n?unbind unbind bot from channel\nlanguage {lang} set lang to deutsch or englisch\nIf you have Questions or ideas what to add add xxthesebxx as friend on discord and ask him",
+    "restart" : "The Bot got restartet, the current Event is {}",
+    "restartnone" : "The Bot got restartet, there is no current Event",
+    "credits" : "Der Bot wird komplett von xXTheSebXx gehosted und geschrieben. Bei Fragen und Anregungen einfach xxthesebxx auf Discord adden oder bei https://github.com/xthesebx/FiestaEventTrackerBot ein Issue eröffnen."
+  },
+  "debug" : {
+    "APO" : "Apo Event",
+    "CYPIAN" : "Cypian Event",
+    "TEVA" : "Teva Event",
+    "NONE" : "No Event",
+    "binding" : "binding",
+    "eventrn" : "{} Event",
+    "noeventrn" : "Kein Event",
+    "unbinding" : "unbound",
+    "unknownLang" : "Falsche Sprache",
+    "langchange" : "switched lang to debug",
+    "commands" : "Commands:\n?bind bind Bot to this channel\n?event print current event\n?unbind unbind bot from channel\nlanguage {lang} set lang to deutsch or englisch",
+    "restart" : "{} Event, restart",
+    "restartnone" : "no event, restart",
+    "credits" : "you know who did this, come on"
+  }
+}
