@@ -66,26 +66,33 @@ public class Main extends ListenerAdapter {
 			if (!bindsObject.has(gid)) bindsObject.put(gid, new JSONObject());
 			bindsObject.getJSONObject(gid).put("bind", cid);
 			writeBinds();
-			channel.sendMessage("binding Channel").queue();
+			channel.sendMessage(guildLangObject.getString("binding")).queue();
 		} else if(s.equals("?event")) {
 			Logger.info("printing current event");
-			channel.sendMessage("Current Event: " + eventCheck.currentEvent).queue();
+			if (eventCheck.currentEvent.equals(EventType.NONE)) channel.sendMessage(guildLangObject.getString("noeventrn")).queue();
+			else channel.sendMessage((guildLangObject.getString("eventrn")).replace("{}", eventCheck.currentEvent.toString())).queue();
 		} else if(s.equals("?unbind")) {
 			Logger.info("unbinding");
 			removeBind(event.getGuild().getId());
-			channel.sendMessage("unbinding Channel").queue();
+			channel.sendMessage(guildLangObject.getString("unbinding")).queue();
 		} else if (s.contains("?language")) {
 			String sprache = s.substring(s.indexOf(" ") + 1).toLowerCase();
 			if (!sprache.equals("deutsch") && !sprache.equals("englisch") && !sprache.equals("debug")) {
-				channel.sendMessage("Sprache unbekannt, nutze englisch oder deutsch als sprache").queue();
+				channel.sendMessage(guildLangObject.getString("unkownLang")).queue();
 				return;
 			}
 			if (!bindsObject.has(gid)) bindsObject.put(gid, new JSONObject());
 			bindsObject.getJSONObject(gid).put("lang", sprache);
 			writeBinds();
+			guildLang = bindsObject.getJSONObject(gid).getString("lang");
+			guildLangObject = lang.getJSONObject(guildLang);
+			channel.sendMessage(guildLangObject.getString("langchange")).queue();
 		} else if (s.equals("?help") || s.equals("?commands")) {
 			Logger.info("command list");
-			channel.sendMessage("Commands:\n?bind bind Bot to this channel\n?event print current event\n?unbind unbind bot from channel").queue();
+			channel.sendMessage(guildLangObject.getString("commands")).queue();
+		} else if (s.equals("?credits")) {
+			Logger.info("printing credits");
+			channel.sendMessage(guildLangObject.getString("credits")).queue();
 		}
 		if (event.getAuthor().getId().equals("277064996264083456")) {
 			if (s.contains("?save")) {
