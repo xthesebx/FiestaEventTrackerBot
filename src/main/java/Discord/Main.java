@@ -217,7 +217,7 @@ public class Main extends ListenerAdapter {
 	}
 	
 	public JSONObject readLang () {
-		File file = new File("src/main/resources/language.json");
+		File file = new File("language.json");
 		StringBuilder text = read(file);
 		return new JSONObject(text.toString());
 	}
