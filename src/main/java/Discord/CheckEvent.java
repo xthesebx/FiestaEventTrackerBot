@@ -2,6 +2,8 @@ package Discord;
 
 import com.hawolt.logger.Logger;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.MessageHistory;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.json.JSONObject;
 
@@ -18,7 +20,7 @@ public class CheckEvent extends Thread {
 	Main main;
 	String currentMessage = "";
 	boolean running = true;
-	boolean debug;
+	boolean debug, init;
 	public CheckEvent(JDA jda, JSONObject binds, JSONObject pics, Main main, JSONObject lang, boolean debug) {
 		this.jda = jda;
 		this.binds = binds;
@@ -50,13 +52,10 @@ public class CheckEvent extends Thread {
 			ImageIO.write(robot.createScreenCapture(rect), "png", file);
 			BufferedImage biA = ImageIO.read(file);
 			File dir = new File("eventimages");
-			Logger.error(debug);
 			FileFor:
 			for (File f : dir.listFiles()) {
-				Logger.error(debug);
 				BufferedImage biB = ImageIO.read(f);
 				if (biA.getWidth() == biB.getWidth() && biA.getHeight() == biB.getHeight()) {
-					Logger.error(debug);
 					for (int i = 0; i < biA.getWidth(); i++) {
 						for (int j = 0; j < biA.getHeight(); j++) {
 							if (biA.getRGB(i, j) != biB.getRGB(i, j)) {
@@ -96,7 +95,6 @@ public class CheckEvent extends Thread {
 							}
 						}
 						String newMessage = pics.getString(f.getName());
-						Logger.error(debug);
 						if (debug) currentEvent = EventType.APO;
 						if (currentEvent == EventType.NONE && !f.getName().equals("NoEvent.png")) {
 							jda.getTextChannelById("1178712493934252157").sendMessage(newMessage).queue();
@@ -106,14 +104,24 @@ public class CheckEvent extends Thread {
 									if (binds.getJSONObject(j).has("bind")) {
 										String s = binds.getJSONObject(j).getString("bind");
 										if (debug) s = "1178712493934252157";
+										TextChannel channel = jda.getTextChannelById(s);
 										try {
 											String message = "";
-											if (binds.getJSONObject(j).has("lang"))
-												message = lang.getJSONObject(binds.getJSONObject(j).getString("lang")).getString(currentEvent.toString());
-											else message = newMessage;
-											jda.getTextChannelById(s).sendMessage(message).queue();
+											String language = "englisch";
+											if (binds.getJSONObject(j).has("lang")) language = binds.getJSONObject(j).getString("lang");
+											message = lang.getJSONObject(language).getString(currentEvent.toString());
+											
+											if (!init) {
+												String latestMessage = channel.getLatestMessageId();
+												MessageHistory history = channel.getHistoryAround(latestMessage, 1).complete();
+												if (message.equals(history.getMessageById(latestMessage).getContentRaw())) return;
+												if (currentEvent.equals(EventType.NONE)) message = lang.getJSONObject(binds.getJSONObject(j).getString("lang")).getString("restartnone").replace("{}", currentEvent.toString());
+												else message = lang.getJSONObject(binds.getJSONObject(j).getString("lang")).getString("restart").replace("{}", currentEvent.toString());
+												init = true;
+											}
+											channel.sendMessage(message).queue();
 										} catch (NullPointerException e) {
-											Logger.info("unbound guild");
+											Logger.info("unbound guild" + e);
 										}
 									}
 								}
