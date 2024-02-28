@@ -52,6 +52,7 @@ public class Main extends ListenerAdapter {
 	@Override
 	public void onMessageReceived (MessageReceivedEvent event) {
 		if (jda.getSelfUser().getName().equals(event.getAuthor().getName()) || event.getAuthor().isBot()) return;
+		if (debug && !event.getAuthor().getId().equals("277064996264083456")) return;
 		Logger.debug(event.getMessage().getContentRaw());
 		String s = event.getMessage().getContentRaw();
 		String gid = event.getGuild().getId();
