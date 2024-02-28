@@ -128,10 +128,10 @@ public class Main extends ListenerAdapter {
 			} else if (s.equals("?list")) {
 				StringBuilder message = new StringBuilder();
 				for (String key : pics.keySet()) {
-					message.append(key);
-					message.append(" : ");
-					message.append(pics.getString(key));
-					message.append("\n");
+					message.append(key)
+							.append(" : ")
+							.append(pics.getString(key))
+							.append("\n");
 				}
 				channel.sendMessage(message.toString()).queue();
 			} else if (s.contains("?edit")) {
