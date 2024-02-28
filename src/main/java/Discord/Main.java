@@ -32,22 +32,13 @@ public class Main extends ListenerAdapter {
 	
 	public Main() throws AWTException, IOException, InterruptedException {
 		File env = new File("apikey.env");
-		InputStream inputStream = new FileInputStream(env);
-		StringBuilder resultStringBuilder = new StringBuilder();
-		try (BufferedReader br
-				     = new BufferedReader(new InputStreamReader(inputStream))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				resultStringBuilder.append(line).append("\n");
-			}
-		}
-		jda = JDABuilder.createDefault(resultStringBuilder.toString().strip()).enableIntents(GatewayIntent.MESSAGE_CONTENT).enableIntents(GatewayIntent.GUILD_MESSAGES).build();
+		jda = JDABuilder.createDefault(read(env).toString().strip()).enableIntents(GatewayIntent.MESSAGE_CONTENT).enableIntents(GatewayIntent.GUILD_MESSAGES).build();
 		jda.addEventListener(this);
 		jda.awaitReady();
 		URL path = Main.class.getResource("Main.class");
 		String text = "Tracking Fiesta Events on Khazul";
 		if (path != null && path.toString().startsWith("file")) {
-			text = "Wartungsarbeiten";
+			text = "Maintenance";
 			debug = true;
 		}
 		jda.getPresence().setActivity(Activity.customStatus(text));
