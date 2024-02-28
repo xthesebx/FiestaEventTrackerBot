@@ -245,4 +245,13 @@ public class Main extends ListenerAdapter {
 		}
 		return text;
 	}
+	
+	public void sendToAll(String message) {
+		for (String j : bindsObject.keySet()) {
+			if (bindsObject.getJSONObject(j).has("bind")) {
+				String s = bindsObject.getJSONObject(j).getString("bind");
+				jda.getTextChannelById(s).sendMessage(message).queue();
+			}
+		}
+	}
 }
