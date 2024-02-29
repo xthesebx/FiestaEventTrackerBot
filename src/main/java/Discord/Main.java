@@ -120,7 +120,6 @@ public class Main extends ListenerAdapter {
 	
 	private JSONObject readBinds () {
 		File file = new File("binds.json");
-		System.out.println(file.getAbsolutePath());
 		StringBuilder text = read(file);
 		return (new JSONObject(text.toString()));
 	}
