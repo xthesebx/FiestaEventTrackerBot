@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 public class CheckEvent extends Thread {
 	public EventType currentEvent;
@@ -29,7 +30,6 @@ public class CheckEvent extends Thread {
 	@Override
 	public void run() {
 		super.run();
-		Logger.error("run Checkevent");
 		while (true) {
 			if (Main.running) checkForEvent();
 			try {
@@ -50,15 +50,38 @@ public class CheckEvent extends Thread {
 			EventType temp = currentEvent;
 			getEventType(name);
 			String newMessage = pics.getString(name);
-			if (debug) currentEvent = EventType.APO;
-			if (currentEvent == EventType.NONE && !name.equals("NoEvent.png")) {
+			if (debug) {
+				Random rng = new Random();
+				switch(rng.nextInt(0, 3)) {
+					case 0: {
+						currentEvent = EventType.APO;
+						break;
+					}
+					case 1: {
+						currentEvent = EventType.CYPIAN;
+						break;
+					}
+					case 2: {
+						currentEvent = EventType.TEVA;
+						break;
+					}
+					case 3: {
+						currentEvent = EventType.NONE;
+						break;
+					}
+				}
+			}
+			if (temp != currentEvent) {
+			Logger.info(currentEvent);
+			if (!debug && currentEvent == EventType.NONE && !name.equals("NoEvent.png")) {
 				jda.getTextChannelById("1178712493934252157").sendMessage(newMessage).queue();
 			} else {
-				if (temp != currentEvent) {
 					if (!init) {
 						if (currentEvent.equals(EventType.NONE)) Main.sendToAllLangDependend("restartnone");
 						else Main.sendToAllLangDependend("restart", currentEvent.toString());
 						init = true;
+					} else {
+						Main.sendToAllLangDependend(currentEvent.toString());
 					}
 				}
 				currentMessage = newMessage;
@@ -116,10 +139,6 @@ public class CheckEvent extends Thread {
 			}
 			case "CypianEvent.png": {
 				currentEvent = EventType.CYPIAN;
-				break;
-			}
-			case "ElgaEvent.png": {
-				currentEvent = EventType.ELGA;
 				break;
 			}
 			default: {
