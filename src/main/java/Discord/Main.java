@@ -57,7 +57,6 @@ public class Main extends ListenerAdapter {
 		String command = s;
 		if (s.contains(" "))
 			command = s.substring(0, s.indexOf(" "));
-		Logger.error(command);
 		switch (command) {
 			case "?bind": {
 				new BindCommand(event);
