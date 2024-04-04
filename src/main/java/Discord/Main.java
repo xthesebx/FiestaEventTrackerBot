@@ -186,14 +186,10 @@ public class Main extends ListenerAdapter {
 		for (String j : bindsObject.keySet()) {
 			if (bindsObject.getJSONObject(j).has("bind")) {
 				String s = bindsObject.getJSONObject(j).getString("bind");
-				//if (debug) s = "1178712493934252157";
+				if (debug) s = "1178712493934252157";
 				TextChannel channel = jda.getTextChannelById(s);
-				try {
-					channel.sendMessage(message).queue();
-				} catch (NullPointerException exception) {
-					Logger.error(exception);
-					Logger.error(s);
-				}
+				if (channel == null) continue;
+				channel.sendMessage(message).queue();
 			}
 		}
 	}
@@ -202,18 +198,14 @@ public class Main extends ListenerAdapter {
 		for (String j : bindsObject.keySet()) {
 			if (bindsObject.getJSONObject(j).has("bind")) {
 				String s = bindsObject.getJSONObject(j).getString("bind");
-				//if (debug) s = "1178712493934252157";
+				if (debug) s = "1178712493934252157";
 				TextChannel channel = jda.getTextChannelById(s);
+				if (channel == null) continue;
 				String output = "";
 				String language = "englisch";
 				if (bindsObject.getJSONObject(j).has("lang")) language = bindsObject.getJSONObject(j).getString("lang");
 				output = lang.getJSONObject(language).getString(message);
-				try {
-					channel.sendMessage(output).queue();
-				} catch (NullPointerException exception) {
-					Logger.error(exception);
-					Logger.error(s);
-				}
+				channel.sendMessage(output).queue();
 			}
 		}
 	}
@@ -222,8 +214,9 @@ public class Main extends ListenerAdapter {
 		for (String j : bindsObject.keySet()) {
 			if (bindsObject.getJSONObject(j).has("bind")) {
 				String s = bindsObject.getJSONObject(j).getString("bind");
-				//if (debug) s = "1178712493934252157";
+				if (debug) s = "1178712493934252157";
 				TextChannel channel = jda.getTextChannelById(s);
+				if (channel == null) continue;
 				String latestMessage = channel.getLatestMessageId();
 				MessageHistory history = channel.getHistoryAround(latestMessage, 1).complete();
 				if (message.equals(history.getMessageById(latestMessage).getContentRaw())) return;
@@ -231,12 +224,7 @@ public class Main extends ListenerAdapter {
 				String language = "englisch";
 				if (bindsObject.getJSONObject(j).has("lang")) language = bindsObject.getJSONObject(j).getString("lang");
 				output = lang.getJSONObject(language).getString(message);
-				try {
-					channel.sendMessage(output.replace("{}", replacement)).queue();
-				} catch (NullPointerException exception) {
-					Logger.error(exception);
-					Logger.error(s);
-				}
+				channel.sendMessage(output.replace("{}", replacement)).queue();
 			}
 		}
 	}
