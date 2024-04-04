@@ -8,6 +8,7 @@ public class StopCommand extends AdminCommands{
 	public StopCommand (MessageReceivedEvent event) throws NotAdminException {
 		super(event);
 		Main.running = false;
+		Main.debug = true;
 		Main.jda.getPresence().setActivity(Activity.customStatus("Maintenance"));
 	}
 }
