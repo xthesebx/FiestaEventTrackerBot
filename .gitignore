@@ -45,3 +45,6 @@ eventimages/
 src/main/java/Discord/test.java
 /src/main/resources/apikey.env
 /apikey.env
+/login.env
+/src/main/java/Discord/screen.java
+/out/artifacts/screenshot_jar/Screenshot.jar

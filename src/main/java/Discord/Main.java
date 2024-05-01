@@ -5,9 +5,10 @@ import com.hawolt.logger.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.json.JSONObject;
@@ -37,6 +38,7 @@ public class Main extends ListenerAdapter {
 		if (path != null && path.toString().startsWith("file")) {
 			text = "Maintenance";
 			debug = true;
+			running = false;
 		}
 		jda.getPresence().setActivity(Activity.customStatus(text));
 		bindsObject = readBinds();
@@ -47,72 +49,61 @@ public class Main extends ListenerAdapter {
 	}
 	
 	@Override
-	public void onMessageReceived (MessageReceivedEvent event) {
-		if (jda.getSelfUser().getName().equals(event.getAuthor().getName()) || event.getAuthor().isBot()) return;
-		if (debug && !event.getAuthor().getId().equals("277064996264083456")) return;
-		Logger.debug(event.getMessage().getContentRaw());
-		String s = event.getMessage().getContentRaw();
-		if (!running && !s.equals("?start")) return;
-		if (!s.startsWith("?")) return;
-		String command = s;
-		if (s.contains(" "))
-			command = s.substring(0, s.indexOf(" "));
-		switch (command) {
-			case "?bind": {
+	public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
+		if (jda.getSelfUser().getName().equals(event.getUser().getName()) || event.getUser().isBot()) return;
+		if (debug && !event.getUser().getId().equals("277064996264083456")) return;
+		Logger.debug(event.getName());
+		String s = event.getName();
+		switch (s) {
+			case "bind": {
 				new BindCommand(event);
 				break;
 			}
-			case "?event": {
+			case "event": {
 				new EventCommand(event);
 				break;
 			}
-			case "?unbind": {
+			case "unbind": {
 				new UnbindCommand(event);
 				break;
 			}
-			case "?language": {
-				new LanguageCommand(event, s);
+			case "language": {
+				new LanguageCommand(event);
 				break;
 			}
-			case "?credits": {
+			case "credits": {
 				new CreditsCommand(event);
 				break;
 			}
-			case "?help","?commands": {
+			case "help": {
 				new HelpCommand(event);
 				break;
 			}
-			case "?stop": {
-				try {
-					new StopCommand(event);
-					break;
-				} catch (NotAdminException e) {
-					Logger.error("Tried to execute Admin command as non Admin!");
-				}
+			case "stop": {
+				new StopCommand(event);
+				break;
 			}
-			case "?start": {
-				try {
-					new StartCommand(event);
-					break;
-				} catch (NotAdminException e) {
-					Logger.error("Tried to execute Admin command as non Admin!");
-				}
+			case "start": {
+				new StartCommand(event);
+				break;
 			}
-			case "?adminmessage": {
-				try {
-					new AdminMessagecommand(event, s);
-					break;
-				} catch (NotAdminException e) {
-					Logger.error("Tried to execute Admin command as non Admin!");
-				}
+			case "adminmessage": {
+				new AdminMessagecommand(event);
+				break;
 			}
-			case "?kill": {
-				try {
-					new KillCommand(event);
-					break;
-				} catch (NotAdminException e) {
-					Logger.error("Tried to execute Admin command as non Admin!");
-				}
+			case "kill": {
+				new KillCommand(event);
+				break;
+			}
+			case "restart": {
+				new Thread(() -> {
+					try {
+						new RestartCommand(event);
+					} catch (Exception e) {
+						Logger.error(e);
+					}
+				}).start();
+				break;
 			}
 		}
 	}
@@ -217,9 +208,10 @@ public class Main extends ListenerAdapter {
 				if (debug) s = "1178712493934252157";
 				TextChannel channel = jda.getTextChannelById(s);
 				if (channel == null) continue;
-				String latestMessage = channel.getLatestMessageId();
-				MessageHistory history = channel.getHistoryAround(latestMessage, 1).complete();
-				if (message.equals(history.getMessageById(latestMessage).getContentRaw())) return;
+				String latestMessageId = channel.getLatestMessageId();
+				MessageHistory history = channel.getHistoryAround(latestMessageId, 1).complete();
+				Message latestMessage = history.getMessageById(latestMessageId);
+				if (!(latestMessage == null) && message.equals(latestMessage.getContentRaw())) return;
 				String output = "";
 				String language = "englisch";
 				if (bindsObject.getJSONObject(j).has("lang")) language = bindsObject.getJSONObject(j).getString("lang");
