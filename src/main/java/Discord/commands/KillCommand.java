@@ -1,12 +1,13 @@
 package Discord.commands;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import static java.lang.System.exit;
 
-public class KillCommand extends AdminCommands {
-	public KillCommand (MessageReceivedEvent event) throws NotAdminException {
+public class KillCommand extends BasicCommand {
+	public KillCommand (SlashCommandInteractionEvent event) {
 		super(event);
+		event.reply("ok").queue();
 		exit(0);
 	}
 }

@@ -1,11 +1,12 @@
 package Discord.commands;
 
 import Discord.Main;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-public class AdminMessagecommand extends AdminCommands {
-	public AdminMessagecommand (MessageReceivedEvent event, String s) throws NotAdminException {
+public class AdminMessagecommand extends BasicCommand {
+	public AdminMessagecommand (SlashCommandInteractionEvent event) {
 		super(event);
-		Main.sendToAll(s.substring(s.indexOf(" ") + 1));
+		Main.sendToAll(event.getOption("text").getAsString());
+		event.reply("ok").queue();
 	}
 }

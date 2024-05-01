@@ -2,17 +2,19 @@ package Discord.commands;
 
 import Discord.Main;
 import com.hawolt.logger.Logger;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.json.JSONObject;
 
 
 public class LanguageCommand extends BasicCommand{
-	public LanguageCommand (MessageReceivedEvent event, String s) {
+	public LanguageCommand (SlashCommandInteractionEvent event) {
 		super(event);
-		Logger.error(s);
-		String languageString = s.substring(s.indexOf(" ") + 1).toLowerCase();
+		OptionMapping options = event.getOption("language");
+		assert options != null;
+		String languageString = options.getAsString();
 		Logger.error(languageString);
-		if (!languageString.equals("deutsch") && !languageString.equals("englisch") && !languageString.equals("debug")) {
+		if (!languageString.equals("deutsch") && !languageString.equals("english") && !languageString.equals("debug")) {
 			sendMessage("unknownLang");
 			return;
 		}
