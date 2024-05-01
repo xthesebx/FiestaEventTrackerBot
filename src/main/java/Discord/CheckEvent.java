@@ -2,6 +2,7 @@ package Discord;
 
 import com.hawolt.logger.Logger;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.json.JSONObject;
 
@@ -19,6 +20,8 @@ public class CheckEvent extends Thread {
 	Main main;
 	String currentMessage = "";
 	boolean debug, init;
+	TextChannel debugChannel;
+
 	public CheckEvent(JDA jda, JSONObject binds, JSONObject pics, Main main, JSONObject lang, boolean debug) {
 		this.jda = jda;
 		this.binds = binds;
@@ -26,6 +29,8 @@ public class CheckEvent extends Thread {
 		this.main = main;
 		this.lang = lang;
 		this.debug = debug;
+		debugChannel = jda.getTextChannelById("1178712493934252157");
+		assert debugChannel != null;
 	}
 	@Override
 	public void run() {
@@ -44,7 +49,7 @@ public class CheckEvent extends Thread {
 		if (name.isEmpty()) return;
 		if (pics.has(name)) {
 			if (name.contains("Disconnect")) {
-				jda.getTextChannelById("1178712493934252157").sendMessage("<@277064996264083456> " + pics.getString(name)).queue();
+				debugChannel.sendMessage("<@277064996264083456> " + pics.getString(name)).queue();
 				return;
 			}
 			EventType temp = currentEvent;
@@ -74,7 +79,7 @@ public class CheckEvent extends Thread {
 			if (temp != currentEvent) {
 			Logger.info(currentEvent);
 			if (!debug && currentEvent == EventType.NONE && !name.equals("NoEvent.png")) {
-				jda.getTextChannelById("1178712493934252157").sendMessage(newMessage).queue();
+				debugChannel.sendMessage(newMessage).queue();
 			} else {
 					if (!init) {
 						if (currentEvent.equals(EventType.NONE)) Main.sendToAllLangDependend("restartnone");
@@ -86,13 +91,12 @@ public class CheckEvent extends Thread {
 				}
 				currentMessage = newMessage;
 			}
-			return;
 		}
 	}
 
 	public String comparePics() {
 		try {
-			main.readPics();
+			Main.readPics();
 			Robot robot = new Robot();
 			Rectangle rect = new Rectangle();
 			rect.setBounds(10, 10, 930, 748);
@@ -100,29 +104,39 @@ public class CheckEvent extends Thread {
 			ImageIO.write(robot.createScreenCapture(rect), "png", file);
 			BufferedImage biA = ImageIO.read(file);
 			File dir = new File("eventimages");
-			FileFor:
-			for (File f : dir.listFiles()) {
-				BufferedImage biB = ImageIO.read(f);
-				if (biA.getWidth() == biB.getWidth() && biA.getHeight() == biB.getHeight()) {
-					for (int i = 0; i < biA.getWidth(); i++) {
-						for (int j = 0; j < biA.getHeight(); j++) {
-							if (biA.getRGB(i, j) != biB.getRGB(i, j)) {
-								if (!debug)
-									continue FileFor;
+			if (!dir.exists()) {
+				if (dir.mkdirs()) {
+					Logger.debug("directory created");
+				} else {
+					Logger.error("could not create directory");
+				}
+			}
+			if (dir.isDirectory()) {
+				File[] files = dir.listFiles();
+				if (files != null) {
+					FileFor:
+					for (File f : files) {
+						BufferedImage biB = ImageIO.read(f);
+						if (biA.getWidth() == biB.getWidth() && biA.getHeight() == biB.getHeight()) {
+							for (int i = 0; i < biA.getWidth(); i++) {
+								for (int j = 0; j < biA.getHeight(); j++) {
+									if (biA.getRGB(i, j) != biB.getRGB(i, j)) {
+										if (!debug)
+											continue FileFor;
+									}
+								}
 							}
+							return f.getName();
 						}
 					}
-					return f.getName();
-				} else{
-					continue;
 				}
 			}
 			File unknownF = new File(System.getProperty("user.home") + "\\Pictures\\" + LocalDateTime.now().getHour() + LocalDateTime.now().getMinute() + LocalDateTime.now().getSecond() + "Unknown_image.png");
 			ImageIO.write(biA, "png", unknownF);
-			Logger.error("unkown type");
-			jda.getTextChannelById("1178712493934252157").sendMessage("<@277064996264083456> " + "IDK PLS HELP").addFiles(FileUpload.fromData(unknownF)).queue();
+			Logger.error("unknown type");
+			debugChannel.sendMessage("<@277064996264083456> " + "IDK PLS HELP").addFiles(FileUpload.fromData(unknownF)).queue();
 		} catch (IOException | AWTException e) {
-		
+			Logger.error(e);
 		}
 		return "";
 	}
