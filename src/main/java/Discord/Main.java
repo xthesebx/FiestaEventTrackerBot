@@ -4,6 +4,7 @@ import Discord.commands.*;
 import com.hawolt.logger.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
@@ -33,6 +34,7 @@ public class Main extends ListenerAdapter {
 		jda = JDABuilder.createDefault(read(env).toString().strip()).enableIntents(GatewayIntent.MESSAGE_CONTENT).enableIntents(GatewayIntent.GUILD_MESSAGES).build();
 		jda.addEventListener(this);
 		jda.awaitReady();
+		jda.getPresence().setStatus(OnlineStatus.OFFLINE);
 		URL path = Main.class.getResource("Main.class");
 		String text = "Tracking Fiesta Events on Khazul";
 		if (path != null && path.toString().startsWith("file")) {
@@ -40,12 +42,12 @@ public class Main extends ListenerAdapter {
 			debug = true;
 			running = false;
 		}
-		jda.getPresence().setActivity(Activity.customStatus(text));
 		bindsObject = readBinds();
 		readPics();
 		lang = readLang();
 		eventCheck = new CheckEvent(jda, bindsObject, pics, this, lang, debug);
 		eventCheck.start();
+		jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.customStatus(text));
 	}
 	
 	@Override
