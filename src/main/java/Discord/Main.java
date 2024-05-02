@@ -37,8 +37,10 @@ public class Main extends ListenerAdapter {
 		jda.getPresence().setStatus(OnlineStatus.OFFLINE);
 		URL path = Main.class.getResource("Main.class");
 		String text = "Tracking Fiesta Events on Khazul";
+		OnlineStatus status = OnlineStatus.ONLINE;
 		if (path != null && path.toString().startsWith("file")) {
 			text = "Maintenance";
+			status = OnlineStatus.DO_NOT_DISTURB;
 			debug = true;
 			running = false;
 		}
@@ -47,7 +49,7 @@ public class Main extends ListenerAdapter {
 		lang = readLang();
 		eventCheck = new CheckEvent(jda, bindsObject, pics, this, lang, debug);
 		eventCheck.start();
-		jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.customStatus(text));
+		jda.getPresence().setPresence(status, Activity.customStatus(text));
 	}
 	
 	@Override
