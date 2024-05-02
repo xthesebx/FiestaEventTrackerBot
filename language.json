@@ -15,7 +15,7 @@
     "restartnone" : "Der Bot wurde neugestartet, aktuell läuft kein Event",
     "credits" : "Der Bot wird komplett von xXTheSebXx gehosted und geschrieben. Bei Fragen und Anregungen einfach xxthesebxx auf Discord adden oder bei https://github.com/xthesebx/FiestaEventTrackerBot ein Issue eröffnen."
   },
-  "englisch" : {
+  "english" : {
     "APO" : "An Apo Event has started",
     "CYPIAN" : "A Cypian Event has started",
     "TEVA" : "A Teva Event has started",
