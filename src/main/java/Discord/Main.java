@@ -31,10 +31,9 @@ public class Main extends ListenerAdapter {
 	
 	public Main() throws AWTException, IOException, InterruptedException {
 		File env = new File("apikey.env");
-		jda = JDABuilder.createDefault(read(env).toString().strip()).enableIntents(GatewayIntent.MESSAGE_CONTENT).enableIntents(GatewayIntent.GUILD_MESSAGES).build();
+		jda = JDABuilder.createDefault(read(env).toString().strip()).enableIntents(GatewayIntent.MESSAGE_CONTENT).enableIntents(GatewayIntent.GUILD_MESSAGES).setStatus(OnlineStatus.OFFLINE).build();
 		jda.addEventListener(this);
 		jda.awaitReady();
-		jda.getPresence().setStatus(OnlineStatus.OFFLINE);
 		URL path = Main.class.getResource("Main.class");
 		String text = "Tracking Fiesta Events on Khazul";
 		OnlineStatus status = OnlineStatus.ONLINE;
