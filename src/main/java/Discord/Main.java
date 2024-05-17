@@ -196,7 +196,7 @@ public class Main extends ListenerAdapter {
 				TextChannel channel = jda.getTextChannelById(s);
 				if (channel == null) continue;
 				String output = "";
-				String language = "englisch";
+				String language = "english";
 				if (bindsObject.getJSONObject(j).has("lang")) language = bindsObject.getJSONObject(j).getString("lang");
 				output = lang.getJSONObject(language).getString(message);
 				channel.sendMessage(output).queue();
@@ -216,7 +216,7 @@ public class Main extends ListenerAdapter {
 				Message latestMessage = history.getMessageById(latestMessageId);
 				if (!(latestMessage == null) && message.equals(latestMessage.getContentRaw())) return;
 				String output = "";
-				String language = "englisch";
+				String language = "english";
 				if (bindsObject.getJSONObject(j).has("lang")) language = bindsObject.getJSONObject(j).getString("lang");
 				output = lang.getJSONObject(language).getString(message);
 				channel.sendMessage(output.replace("{}", replacement)).queue();
