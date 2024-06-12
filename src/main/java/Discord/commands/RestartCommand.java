@@ -1,5 +1,8 @@
 package Discord.commands;
 
+import Discord.Main;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import javax.imageio.ImageIO;
@@ -17,6 +20,9 @@ import java.io.IOException;
 public class RestartCommand extends BasicCommand {
     public RestartCommand(SlashCommandInteractionEvent event) throws AWTException, IOException, InterruptedException{
         super(event);
+        Main.running = false;
+        Main.debug = true;
+        Main.jda.getPresence().setPresence(OnlineStatus.DO_NOT_DISTURB, Activity.customStatus("Restarting"));
         event.reply("ok").queue();
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command("cmd.exe", "/c", "taskkill /f /im fiesta.bin");
@@ -111,6 +117,9 @@ public class RestartCommand extends BasicCommand {
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         Thread.sleep(5000);
         robot.mouseMove(1024, 768);
+        Main.running = true;
+        Main.debug = false;
+        Main.jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.customStatus("Tracking Fiesta Events on Khazul"));
     }
 
     private String compare(File file) throws IOException {
