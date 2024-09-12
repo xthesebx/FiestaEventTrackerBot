@@ -10,6 +10,9 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.session.SessionDisconnectEvent;
+import net.dv8tion.jda.api.events.session.SessionRecreateEvent;
+import net.dv8tion.jda.api.events.session.SessionResumeEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.json.JSONObject;
@@ -31,7 +34,7 @@ public class Main extends ListenerAdapter {
 	
 	public Main() throws AWTException, IOException, InterruptedException {
 		File env = new File("apikey.env");
-		jda = JDABuilder.createDefault(read(env).toString().strip()).enableIntents(GatewayIntent.MESSAGE_CONTENT).enableIntents(GatewayIntent.GUILD_MESSAGES).setStatus(OnlineStatus.OFFLINE).build();
+		jda = JDABuilder.createDefault(read(env).toString().strip()).enableIntents(GatewayIntent.MESSAGE_CONTENT).enableIntents(GatewayIntent.GUILD_MESSAGES).setStatus(OnlineStatus.OFFLINE).setAutoReconnect(true).build();
 		jda.addEventListener(this);
 		jda.awaitReady();
 		URL path = Main.class.getResource("Main.class");
@@ -50,7 +53,25 @@ public class Main extends ListenerAdapter {
 		eventCheck.start();
 		jda.getPresence().setPresence(status, Activity.customStatus(text));
 	}
-	
+
+	@Override
+	public void onSessionDisconnect(SessionDisconnectEvent event) {
+		super.onSessionDisconnect(event);
+		Logger.error("disconnected");
+	}
+
+	@Override
+	public void onSessionRecreate(SessionRecreateEvent event) {
+		super.onSessionRecreate(event);
+		Logger.error("session recreated");
+	}
+
+	@Override
+	public void onSessionResume(SessionResumeEvent event) {
+		super.onSessionResume(event);
+		Logger.error("session resumed");
+	}
+
 	@Override
 	public void onSlashCommandInteraction (SlashCommandInteractionEvent event) {
 		if (jda.getSelfUser().getName().equals(event.getUser().getName()) || event.getUser().isBot()) return;

@@ -22,6 +22,12 @@ public class CheckEvent extends Thread {
 	boolean debug, init;
 	TextChannel debugChannel;
 
+	/**
+	 * Check Event sometimes stops on reconnecting JDA, I have no idea why rn,
+	 * trying to log more errors to find the reason, somehow using any command
+	 * restarts it, I legit have 0 clue why and i have no idea what fires and how it should ever stop
+	 **/
+
 	public CheckEvent(JDA jda, JSONObject binds, JSONObject pics, Main main, JSONObject lang, boolean debug) {
 		this.jda = jda;
 		this.binds = binds;
@@ -39,7 +45,8 @@ public class CheckEvent extends Thread {
 			if (Main.running) checkForEvent();
 			try {
 				Thread.sleep(60000);
-			} catch (InterruptedException ignored){
+			} catch (InterruptedException e){
+				Logger.error(e);
 			}
 		}
 	}
